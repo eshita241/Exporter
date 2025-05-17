@@ -19,7 +19,6 @@ export default function RawMaterialsAdmin() {
   })
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [editingMaterial, setEditingMaterial] = useState<RawMaterial | null>(null)
   const [quantityUpdate, setQuantityUpdate] = useState<{id:string, value:string}> ({id:'',value:'0'})
 
   const [error, setError] = useState<string | null>(null)

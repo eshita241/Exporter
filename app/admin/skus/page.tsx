@@ -2,8 +2,26 @@
 
 import { useEffect, useState } from 'react'
 
+interface RawMaterial {
+  name: string
+}
+
+interface RecipeItem {
+  id: string
+  rawMaterial?: RawMaterial
+}
+
+interface SKU {
+  id: string
+  name: string
+  code: string
+  description?: string
+  recipeItems?: RecipeItem[]
+}
+
+
 export default function SKUPage() {
-  const [skus, setSkus] = useState<any[]>([])
+  const [skus, setSkus] = useState<SKU[]>([])
   const [name, setName] = useState('')
   const [code, setCode] = useState('')
   const [description, setDescription] = useState('')
@@ -88,11 +106,11 @@ export default function SKUPage() {
           <li key={sku.id} className="border p-4 rounded">
             <h2 className="font-semibold">{sku.name} ({sku.code})</h2>
             <p>{sku.description}</p>
-            {sku.recipeItems?.length > 0 && (
+            {sku.recipeItems && sku.recipeItems?.length > 0 && (
               <div className="mt-2">
                 <p className="font-medium">Recipe Items:</p>
                 <ul className="ml-4 list-disc">
-                  {sku.recipeItems.map((item: any) => (
+                  {sku.recipeItems?.map((item: RecipeItem) => (
                     <li key={item.id}>
                       {item.rawMaterial?.name || 'Unnamed Raw Material'}
                     </li>

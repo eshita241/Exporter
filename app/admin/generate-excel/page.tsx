@@ -64,7 +64,7 @@ export default function GenerateExcelPage() {
                 className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-xs text-gray-500">
-                If no date is selected, today's date will be used
+                If no date is selected, today&rsquo;s date will be used
               </p>
             </div>
 

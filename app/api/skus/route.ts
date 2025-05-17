@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json(skus)
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch SKUs' },
       { status: 500 }
@@ -58,8 +58,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json(sku, { status: 201 })
-  } catch (error) {
-    console.error(error)
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create SKU' },
       { status: 500 }

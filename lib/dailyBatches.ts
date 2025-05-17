@@ -1,4 +1,4 @@
-import { format, startOfDay } from 'date-fns'
+import { startOfDay } from 'date-fns'
 import prisma from './prisma'
 import { SKU, DailyBatch } from '@prisma/client'
 

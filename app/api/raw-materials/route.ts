@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const materials = await prisma.rawMaterial.findMany()
     return NextResponse.json(materials)
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch raw materials' },
       { status: 500 }
@@ -35,8 +35,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json(material, { status: 201 })
-  } catch (error) {
-    console.error(error)
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create raw material' },
       { status: 500 }

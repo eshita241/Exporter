@@ -117,9 +117,7 @@ export default function RecipeManagementPage() {
       if (!response.ok) {
         throw new Error(`Failed to add recipe item: ${response.status}`)
       }
-      
-      const newRecipeItem = await response.json()
-      
+            
       // Refetch recipe items to show the updated list
       const updatedRecipeResponse = await fetch(`/api/recipes?skuId=${selectedSkuId}`)
       const updatedRecipes: RecipeItemWithRawMaterial[] = await updatedRecipeResponse.json()

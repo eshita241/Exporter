@@ -19,7 +19,7 @@ export default function BatchEntryPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+  const [selectedDate] = useState(new Date().toISOString().split('T')[0])
 
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({
