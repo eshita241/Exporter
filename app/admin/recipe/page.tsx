@@ -301,8 +301,8 @@ export default function RecipeManagementPage() {
                 </label>
                 <input
                   type="number"
-                  min="0.01"
-                  step="0.01"
+                  min="0"
+                  step="0.0001"
                   className="w-full p-2 border rounded-md text-black focus:border-blue-500 focus:outline-none"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}

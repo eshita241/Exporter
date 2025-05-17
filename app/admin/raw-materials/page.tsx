@@ -151,7 +151,7 @@ export default function RawMaterialsAdmin() {
         
         {/* Add New Material Form */}
         <div className="bg-white shadow rounded-lg p-5 mt-4">
-          <h2 className="text-lg font-semibold mb-4">Add New Raw Material</h2>
+          <h2 className="text-lg font-semibold text-black mb-4">Add New Raw Material</h2>
           
           <div className="space-y-4">
             <div>
@@ -161,7 +161,7 @@ export default function RawMaterialsAdmin() {
               <input
                 type="text"
                 placeholder="Enter material name"
-                className="w-full border rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border rounded-lg p-3 text-black focus:ring-blue-500 focus:border-blue-500"
                 value={newMaterial.name}
                 onChange={(e) => setNewMaterial({...newMaterial, name: e.target.value})}
                 required
@@ -175,7 +175,7 @@ export default function RawMaterialsAdmin() {
               <input
                 type="text"
                 placeholder="Enter unit of measurement"
-                className="w-full border rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border rounded-lg p-3 text-black focus:ring-blue-500 focus:border-blue-500"
                 value={newMaterial.unit}
                 onChange={(e) => setNewMaterial({...newMaterial, unit: e.target.value})}
                 required
@@ -191,7 +191,7 @@ export default function RawMaterialsAdmin() {
                 min="0"
                 step="0.01"
                 placeholder="Enter initial quantity"
-                className="w-full border rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border rounded-lg p-3 text-black focus:ring-blue-500 focus:border-blue-500"
                 value={newMaterial.quantity}
                 onChange={(e) => setNewMaterial({
                   ...newMaterial, 
@@ -207,7 +207,7 @@ export default function RawMaterialsAdmin() {
               <input
                 type="text"
                 placeholder="Enter description"
-                className="w-full border rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border rounded-lg p-3 text-black focus:ring-blue-500 focus:border-blue-500"
                 value={newMaterial.description}
                 onChange={(e) => setNewMaterial({...newMaterial, description: e.target.value})}
               />
