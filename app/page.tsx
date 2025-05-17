@@ -323,7 +323,7 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
       {showAuthModal && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div className="bg-white rounded-lg p-6 w-full max-w-md">
-      <h2 className="text-xl font-bold mb-4">Authentication Required</h2>
+      <h2 className="text-xl font-bold text-black mb-4">Authentication Required</h2>
       <form onSubmit={handleAuthSubmit}>
         <div className="mb-4">
           <label className="block text-sm text-black font-medium mb-1">User ID</label>
@@ -337,7 +337,7 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Password</label>
+          <label className="block text-sm text-black font-medium mb-1">Password</label>
           <input
             type="password"
             name="password"

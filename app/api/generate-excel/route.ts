@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import * as XLSX from 'xlsx'
+import {format} from 'date-fns'
 
 const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
   try {
-    const { batchData } = await request.json()
+    const { batchData, date } = await request.json()
 
     if (!batchData || !Array.isArray(batchData)) {
       return NextResponse.json(
@@ -15,6 +16,9 @@ export async function POST(request: Request) {
       )
     }
 
+    const reportDate = date ? new Date(date):new Date()
+    const formattedDate = format(reportDate, 'yyyy-MM-dd')
+
     const batchesMap = new Map()
     batchData.forEach(item => {
       if (item.skuId && typeof item.batches === 'number') {
@@ -22,45 +26,75 @@ export async function POST(request: Request) {
       }
     })
 
-    const skus = await prisma.sKU.findMany({
+    const [skus, rawMaterials, recipeItems, previousDayBatches] = await Promise.all([
+      prisma.sKU.findMany({
       where: {
         id: { in: Array.from(batchesMap.keys()) }
       }
-    })
+    }),
+    prisma.rawMaterial.findMany(),
+    prisma.recipeItem.findMany({
+      where:{skuId:{in: Array.from(batchesMap.keys())}},
+      include: {sku:true, rawMaterial:true}
+    }),
+prisma.dailyBatch.findMany({
+        where: {
+          date: {
+            lt: new Date(reportDate.setHours(0, 0, 0, 0)),
+            gte: new Date(new Date(reportDate).setDate(reportDate.getDate() - 1))
+          }
+        },
+        include: {
+          sku: {
+            include: {
+              recipeItems: {
+                include: {
+                  rawMaterial: true
+                }
+              }
+            }
+          }
+        }
+      })
+    ])
 
-    const rawMaterials = await prisma.rawMaterial.findMany()
-
-    const recipeItems = await prisma.recipeItem.findMany({
-      where: {
-        skuId: { in: Array.from(batchesMap.keys()) }
-      },
-      include: {
-        sku: true,
-        rawMaterial: true
-      }
-    })
-
-    const headers = ['Raw Material', 'Unit']
+    const headers = ['Raw Material', 'Unit', 'Current Quantity']
     skus.forEach(sku => {
       headers.push(`${sku.name} (${sku.code})`)
     })
-    headers.push('Total')
-    headers.push('Closing')
+    headers.push('Total Consumption')
+    headers.push('Closing Quantity')
 
     // we create a map to store material requirements
     // Format: Map<rawMaterialId, Map<skuId, quantity>>
     const materialRequirements = new Map()
+    const previousDayConsumption = new Map()
 
     rawMaterials.forEach(material => {
-      materialRequirements.set(material.id, new Map())
+      materialRequirements.set(material.id, {
+        requirements: new Map(),
+        currentQuantity: material.quantity || 0
+      })
+      previousDayConsumption.set(material.id, 0)
+    })
+
+    previousDayBatches.forEach(batch => {
+      batch.sku.recipeItems.forEach(recipe => {
+        const materialId = recipe.rawMaterialId
+        const consumption = recipe.quantity * batch.batches
+        previousDayConsumption.set(
+          materialId, 
+          (previousDayConsumption.get(materialId) || 0) + consumption
+        )
+      })
     })
 
     recipeItems.forEach(item => {
       const batches = batchesMap.get(item.skuId) || 0
       if (batches > 0) {
-        const materialMap = materialRequirements.get(item.rawMaterialId)
+        const materialData = materialRequirements.get(item.rawMaterialId)
         const requirement = item.quantity * batches
-        materialMap.set(item.skuId, requirement)
+        materialData.requirements.set(item.skuId, requirement)
       }
     })
 
@@ -68,18 +102,23 @@ export async function POST(request: Request) {
 
     // for adding rows for each raw material
     rawMaterials.forEach(material => {
-      const materialMap = materialRequirements.get(material.id)
-      const rowData = [material.name, material.unit]
+      const materialData = materialRequirements.get(material.id)
+      const prevConsumption = previousDayConsumption.get(material.id) || 0
+      
+      const currentQty = Math.max(0, materialData.currentQuantity - prevConsumption)
+      const rowData = [material.name, material.unit,currentQty.toString()]
       
       let totalRequirement = 0
       skus.forEach(sku => {
-        const requirement = materialMap.get(sku.id) || 0
+        const requirement = materialData.requirements.get(sku.id) || 0
         // Add requirement or empty string if zero
-        rowData.push(requirement > 0 ? requirement : '')
+        rowData.push(requirement > 0 ? requirement.toString() : '')
         totalRequirement += requirement
       })
 
       rowData.push(totalRequirement > 0 ? totalRequirement.toString() : '')
+      const closingQty = Math.max(0, currentQty - totalRequirement)
+      rowData.push(closingQty.toString())
       worksheet_data.push(rowData)
     })
 
@@ -87,7 +126,7 @@ export async function POST(request: Request) {
     const worksheet = XLSX.utils.aoa_to_sheet(worksheet_data)
 
     const columnWidths = worksheet_data[0].map((_, i) => {
-      let maxWidth = 0
+      let maxWidth = 10
       worksheet_data.forEach(row => {
         const cellValue = row[i]?.toString() || '';
         if (cellValue.length > maxWidth) {
@@ -111,7 +150,7 @@ export async function POST(request: Request) {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'Content-Disposition': 'attachment; filename=material_requirements.xlsx'
+        'Content-Disposition': `attachment; filename=material_requirements_${formattedDate}.xlsx`
       }
     })
   } catch (error) {
