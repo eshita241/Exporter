@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { SKU } from '@prisma/client'
+import { SKU, DailyBatch } from '@prisma/client'
 
 interface SKUWithBatches extends SKU {
   batches: number
+  dailyBatches: DailyBatch[]
 }
 interface AuthCredentials {
   userId: string
@@ -18,6 +19,7 @@ export default function BatchEntryPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
 
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({
@@ -77,8 +79,8 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
           throw new Error(`Failed to fetch SKUs: ${response.status}`)
         }
 
-        const data: SKU[] = await response.json()
-        setSkus(data.map(sku => ({ ...sku, batches: 0 })))
+        const data: (SKU & {dailyBatches:DailyBatch[]})[] = await response.json()
+        setSkus(data.map(sku => ({ ...sku, batches: sku.dailyBatches[0]?.batches || 0 })))
       } catch (err) {
         console.error('Failed to fetch SKUs:', err)
         setError('Failed to load SKUs. Please try again.')
@@ -88,7 +90,7 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
     }
 
     fetchSKUs()
-  }, [])
+  }, [selectedDate])
 
   const handleBatchChange = (skuId: string, value: string) => {
     const batches = parseInt(value) || 0
@@ -115,7 +117,7 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
             .map(sku => ({
               skuId: sku.id,
               batches: sku.batches,
-              date: new Date().toISOString().split('T')[0]
+              date: selectedDate
             }))
         }),
       })
@@ -130,6 +132,7 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
         setSaveSuccess(false)
       }, 3000)
       
+      
     } catch (err) {
       console.error('Error saving batches:', err)
       setError('Failed to save batches. Please try again.')
@@ -137,6 +140,8 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
       setIsSaving(false)
     }
   }
+
+  
 
   const handleGenerateExcel = async () => {
   setIsGenerating(true)
