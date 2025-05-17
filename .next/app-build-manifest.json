@@ -1,0 +1,117 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/_not-found/page-d77a8343bf60c330.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/css/6e1ab77e3c06789a.css",
+      "static/chunks/app/layout-0d68f7b434f95688.js"
+    ],
+    "/api/batches/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/batches/route-95c979e74669cc3c.js"
+    ],
+    "/api/daily-batches/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/daily-batches/route-80f5e53589e0c5a4.js"
+    ],
+    "/api/generate-excel/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/generate-excel/route-84cdacd5cb37b5e8.js"
+    ],
+    "/api/raw-materials/quantity/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/raw-materials/quantity/route-79e288f3cb8c9f10.js"
+    ],
+    "/api/raw-materials/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/raw-materials/route-80c8aa83f10f6c79.js"
+    ],
+    "/api/sku-with-batches/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/sku-with-batches/route-a19bab2685626afb.js"
+    ],
+    "/api/verify-creds/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/verify-creds/route-58e1d6d84024879d.js"
+    ],
+    "/api/skus/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/skus/route-a0f4a6c9ed1da2b6.js"
+    ],
+    "/api/recipes/route": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/api/recipes/route-590c02ce4af4cc8c.js"
+    ],
+    "/admin/generate-excel/page": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/admin/generate-excel/page-235e29cdd4fb5de9.js"
+    ],
+    "/admin/recipe/page": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/admin/recipe/page-6d15d2a89d46158b.js"
+    ],
+    "/admin/skus/page": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/admin/skus/page-4f18c6426e989c97.js"
+    ],
+    "/admin/raw-materials/page": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/admin/raw-materials/page-d186a316c1a5158d.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-7c870ce55912d3b5.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-ead481e1ff98829d.js",
+      "static/chunks/main-app-2bd298a2bc08058d.js",
+      "static/chunks/app/page-2db33bd3544e649a.js"
+    ]
+  }
+}

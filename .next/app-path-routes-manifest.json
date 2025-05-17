@@ -1,0 +1,18 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/batches/route": "/api/batches",
+  "/api/daily-batches/route": "/api/daily-batches",
+  "/api/generate-excel/route": "/api/generate-excel",
+  "/api/raw-materials/quantity/route": "/api/raw-materials/quantity",
+  "/api/raw-materials/route": "/api/raw-materials",
+  "/api/sku-with-batches/route": "/api/sku-with-batches",
+  "/api/verify-creds/route": "/api/verify-creds",
+  "/api/skus/route": "/api/skus",
+  "/api/recipes/route": "/api/recipes",
+  "/favicon.ico/route": "/favicon.ico",
+  "/admin/generate-excel/page": "/admin/generate-excel",
+  "/admin/recipe/page": "/admin/recipe",
+  "/admin/skus/page": "/admin/skus",
+  "/admin/raw-materials/page": "/admin/raw-materials",
+  "/page": "/"
+}
