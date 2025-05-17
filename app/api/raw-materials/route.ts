@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
+
 export async function GET() {
   try {
     const materials = await prisma.rawMaterial.findMany()
@@ -15,7 +16,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { name, unit, description } = await request.json()
+    const { name, unit,quantity, description } = await request.json()
 
     if (!name || !unit) {
       return NextResponse.json(
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
       data: {
         name,
         unit,
+        quantity: quantity || 0,
         description: description || ''
       }
     })

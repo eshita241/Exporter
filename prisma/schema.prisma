@@ -22,6 +22,7 @@ model RawMaterial {
   id          String      @id @default(cuid())
   name        String
   unit        String
+  quantity    Float       @default(0)  
   description String?
   recipeItems RecipeItem[]
   createdAt   DateTime    @default(now())

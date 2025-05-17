@@ -6,6 +6,7 @@ interface NewMaterial {
   name: string
   unit: string
   description: string
+  quantity?: number
 }
 
 export default function RawMaterialsAdmin() {
@@ -13,10 +14,13 @@ export default function RawMaterialsAdmin() {
   const [newMaterial, setNewMaterial] = useState<NewMaterial>({
     name: '',
     unit: '',
-    description: ''
+    description: '',
+    quantity:0
   })
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [editingMaterial, setEditingMaterial] = useState<RawMaterial | null>(null)
+  const [quantityUpdate, setQuantityUpdate] = useState<{id:string, value:string}> ({id:'',value:'0'})
 
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -30,6 +34,7 @@ export default function RawMaterialsAdmin() {
         setMaterials(data)
       } catch (error) {
         console.error('Error fetching materials:', error)
+        setError('Failed to load materials')
       } finally {
         setIsLoading(false)
       }
@@ -52,7 +57,10 @@ export default function RawMaterialsAdmin() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newMaterial),
+        body: JSON.stringify({
+          ...newMaterial,
+          quantity: newMaterial.quantity || 0
+        }),
       })
 
       if (!response.ok) {
@@ -62,12 +70,49 @@ export default function RawMaterialsAdmin() {
 
       const addedMaterial = await response.json()
       setMaterials([...materials, addedMaterial])
-      setNewMaterial({ name: '', unit: '', description: '' })
+      setNewMaterial({ name: '', unit: '', description: '', quantity:0 })
     } catch (error) {
       console.error('Error:', error)
       alert(error instanceof Error ? error.message : 'Failed to add material')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleUpdateQuantity = async (materialId: string) => {
+    if (!quantityUpdate.value || isNaN(Number(quantityUpdate.value))) {
+      setError('Please enter a valid quantity')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/raw-materials/quantity', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          materialId,
+          quantity: Number(quantityUpdate.value),
+          action: 'set'
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to update quantity')
+      }
+
+      const updatedMaterial = await response.json()
+      setMaterials(materials.map(m => 
+        m.id === updatedMaterial.id ? updatedMaterial : m
+      ))
+      setQuantityUpdate({id: '', value: '0'})
+      setSuccessMessage('Quantity updated successfully!')
+      setTimeout(() => setSuccessMessage(null), 3000)
+    } catch (error) {
+      console.error('Error:', error)
+      setError(error instanceof Error ? error.message : 'Failed to update quantity')
     }
   }
 
@@ -136,6 +181,24 @@ export default function RawMaterialsAdmin() {
                 required
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Initial Quantity
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Enter initial quantity"
+                className="w-full border rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                value={newMaterial.quantity}
+                onChange={(e) => setNewMaterial({
+                  ...newMaterial, 
+                  quantity: parseFloat(e.target.value) || 0
+                })}
+              />
+            </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -191,15 +254,59 @@ export default function RawMaterialsAdmin() {
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Name</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Unit</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Current Qty</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Update Qty</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider hidden sm:table-cell">Description</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 text-black">
+               <tbody className="divide-y divide-gray-200 text-black">
                   {materials.map((material) => (
                     <tr key={material.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 whitespace-nowrap">{material.name}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{material.unit}</td>
-                      <td className="px-4 py-3 whitespace-nowrap hidden sm:table-cell">{material.description || '-'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{material.quantity}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {quantityUpdate.id === material.id ? (
+                          <div className="flex space-x-2">
+                            <input
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              className="w-20 border rounded p-1"
+                              value={quantityUpdate.value}
+                              onChange={(e) => setQuantityUpdate({
+                                id: material.id,
+                                value: e.target.value
+                              })}
+                            />
+                            <button
+                              onClick={() => handleUpdateQuantity(material.id)}
+                              className="bg-blue-500 text-white px-2 py-1 rounded text-sm"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setQuantityUpdate({id: '', value: '0'})}
+                              className="bg-gray-500 text-white px-2 py-1 rounded text-sm"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setQuantityUpdate({
+                              id: material.id,
+                              value: material.quantity.toString()
+                            })}
+                            className="bg-green-500 text-white px-2 py-1 rounded text-sm"
+                          >
+                            Update
+                          </button>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap hidden sm:table-cell">
+                        {material.description || '-'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
