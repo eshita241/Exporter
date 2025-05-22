@@ -7,10 +7,7 @@ interface SKUWithBatches extends SKU {
   batches: number
   dailyBatches: DailyBatch[]
 }
-interface AuthCredentials {
-  userId: string
-  password: string
-}
+
 
 export default function BatchEntryPage() {
   const [skus, setSkus] = useState<SKUWithBatches[]>([])
@@ -21,52 +18,8 @@ export default function BatchEntryPage() {
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [selectedDate] = useState(new Date().toISOString().split('T')[0])
 
-  const [showAuthModal, setShowAuthModal] = useState(false)
-  const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({
-    userId: '',
-    password: ''
-  })
-  const [authError, setAuthError] = useState<string | null>(null)
-  const handleAuthInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target
-  setAuthCredentials(prev => ({
-    ...prev,
-    [name]: value
-  }))
-}
-const handleGenerateClick = () => {
-  setShowAuthModal(true)
-}
-
-const handleAuthSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setAuthError(null)
   
-  if (!authCredentials.userId || !authCredentials.password) {
-    setAuthError('Both user ID and password are required')
-    return
-  }
 
-  try {
-    const response = await fetch('/api/verify-creds', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(authCredentials),
-    })
-
-    if (!response.ok) {
-      throw new Error('Invalid credentials')
-    }
-
-    setShowAuthModal(false)
-    await handleGenerateExcel()
-  } catch (err) {
-    console.error('Authentication error:', err)
-    setAuthError('Invalid credentials. Please try again.')
-  }
-}
   useEffect(() => {
     const fetchSKUs = async () => {
       try {
@@ -140,46 +93,6 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
       setIsSaving(false)
     }
   }
-
-  
-
-  const handleGenerateExcel = async () => {
-  setIsGenerating(true)
-  try {
-    const response = await fetch('/api/generate-excel', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${btoa(`${authCredentials.userId}:${authCredentials.password}`)}`
-      },
-      body: JSON.stringify({ 
-        batchData: skus.map(sku => ({
-          skuId: sku.id,
-          batches: sku.batches
-        }))
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to generate Excel')
-    }
-
-    const blob = await response.blob()
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'material_requirements.xlsx'
-    document.body.appendChild(a)
-    a.click()
-    window.URL.revokeObjectURL(url)
-    a.remove()
-  } catch (err) {
-    console.error('Error generating Excel:', err)
-    alert('Failed to generate Excel file. Please try again.')
-  } finally {
-    setIsGenerating(false)
-  }
-}
 
 
   if (isLoading) {
@@ -308,73 +221,8 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
               'Save Batches'
             )}
           </button>
-          
-         <button
-  onClick={handleGenerateClick}
-  disabled={isGenerating || skus.length === 0}
-  className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-    isGenerating || skus.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
-  }`}
->
-  Generate Excel Report
-</button>
-        </div>
-      </footer>
-      {showAuthModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-      <h2 className="text-xl font-bold text-black mb-4">Authentication Required</h2>
-      <form onSubmit={handleAuthSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm text-black font-medium mb-1">User ID</label>
-          <input
-            type="text"
-            name="userId"
-            value={authCredentials.userId}
-            onChange={handleAuthInputChange}
-            className="border rounded py-2 px-3 w-full text-black"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm text-black font-medium mb-1">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={authCredentials.password}
-            onChange={handleAuthInputChange}
-            className="border rounded py-2 px-3 w-full text-black"
-            required
-          />
-        </div>
-        {authError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {authError}
           </div>
-        )}
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => setShowAuthModal(false)}
-            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isGenerating}
-            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 ${
-              isGenerating ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            {isGenerating ? 'Verifying...' : 'Generate Excel'}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
-    </div>
+          </footer>
+          </div>
   )
 }
