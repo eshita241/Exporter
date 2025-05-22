@@ -13,7 +13,6 @@ export default function BatchEntryPage() {
   const [skus, setSkus] = useState<SKUWithBatches[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [selectedDate] = useState(new Date().toISOString().split('T')[0])

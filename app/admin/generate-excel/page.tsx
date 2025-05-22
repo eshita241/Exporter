@@ -18,7 +18,6 @@ export default function GenerateExcelPage() {
   const [error, setError] = useState<string | null>(null)
   const [selectedDate] = useState(new Date().toISOString().split('T')[0])
   const [date, setDate] = useState('')
-  const [loading, setLoading] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authCredentials, setAuthCredentials] = useState<AuthCredentials>({
@@ -130,6 +129,52 @@ const handleAuthSubmit = async (e: React.FormEvent) => {
     setIsGenerating(false)
   }
 }
+
+if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pb-20">
+        <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
+          <div className="px-4 py-4">
+            <h1 className="text-xl font-bold text-blue-700">GENERATE EXCEL</h1>
+          </div>
+        </header>
+        
+        <main className="pt-16 px-4 pb-24">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+    if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 pb-20">
+        <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
+          <div className="px-4 py-4">
+            <h1 className="text-xl font-bold text-blue-700">GENERATE EXCEL</h1>
+          </div>
+        </header>
+        
+        <main className="pt-20 px-4 pb-24">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+            {error}
+          </div>
+          <button
+            onClick={() => {
+              setError(null)
+              window.location.reload()
+            }}
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg shadow-sm"
+          >
+            Retry
+          </button>
+        </main>
+      </div>
+    )
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
